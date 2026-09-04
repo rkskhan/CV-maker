@@ -225,6 +225,251 @@ export const SAMPLE_PRODUCT_CV: CVData = {
   ],
 };
 
+export const SAMPLE_BUSINESS_STUDENT_CV: CVData = {
+  personalInfo: {
+    fullName: 'EMILY R. ZHAO',
+    jobTitle: 'Business & Finance Associate | Aspiring Management Consultant',
+    email: 'emily.zhao@email.com',
+    phone: '+1 (555) 419-8230',
+    location: 'Chicago, IL',
+    linkedinUrl: 'linkedin.com/in/emilyzhao-biz',
+    githubUrl: '',
+    websiteUrl: 'emilyzhao.me',
+  },
+  summary:
+    'High-achieving Business Administration & Finance senior (GPA 3.88/4.0) with hands-on internship experience in financial valuation, market entry strategy, and quantitative data analytics. Proven track record building 3-statement DCF financial models, conducting cross-industry competitive intelligence, and presenting executive-ready recommendations. 1st Place Winner of the 2023 National Collegiate Consulting Case Competition.',
+  experience: [
+    {
+      id: 'exp-1',
+      jobTitle: 'Investment Banking Summer Analyst',
+      company: 'Horizon Capital Partners',
+      location: 'Chicago, IL',
+      startDate: 'Jun 2023',
+      endDate: 'Aug 2023',
+      isCurrent: false,
+      bullets: [
+        'Constructed dynamic DCF, precedent transactions, and comparable company valuation models for 4 active M&A mandates totaling $450M in enterprise value.',
+        'Authored 25-page confidential information memorandums (CIM) and pitch books presented directly to C-suite executives and institutional sponsors.',
+        'Automated financial variance reporting routines using Advanced Excel and VBA, reducing bi-weekly reporting prep time by 35%.',
+        'Conducted detailed financial statement analysis across 18 public peers to benchmark EBITDA margins, leverage ratios, and working capital cycles.',
+      ],
+    },
+    {
+      id: 'exp-2',
+      jobTitle: 'Corporate Strategy & Marketing Intern',
+      company: 'Apex Consumer Brands',
+      location: 'Chicago, IL',
+      startDate: 'Jan 2023',
+      endDate: 'May 2023',
+      isCurrent: false,
+      bullets: [
+        'Analyzed customer churn data across 12 product categories using SQL and Power BI, uncovering strategic insights that identified $1.2M in annualized cost savings.',
+        'Designed go-to-market (GTM) expansion framework for digital direct-to-consumer line, accelerating project timeline by 3 weeks.',
+        'Synthesized syndicated market research reports (Nielsen, Euromonitor) into actionable competitive intelligence briefs for senior brand directors.',
+      ],
+    },
+    {
+      id: 'exp-3',
+      jobTitle: 'Portfolio Analyst (Student Investment Fund)',
+      company: 'Northwestern Student Endowment Fund',
+      location: 'Evanston, IL',
+      startDate: 'Sep 2022',
+      endDate: 'Present',
+      isCurrent: true,
+      bullets: [
+        'Co-managed $1.5M student-run equity endowment, pitching equity research recommendations in the technology and consumer discretionary sectors.',
+        'Monitored macroeconomic indicators, interest rate sensitivity, and earnings guidance to rebalance asset allocation quarterly.',
+      ],
+    },
+  ],
+  education: [
+    {
+      id: 'edu-1',
+      degree: 'Bachelor of Science in Business Administration (Finance & Strategy)',
+      institution: 'Northwestern University',
+      location: 'Evanston, IL',
+      graduationDate: 'May 2024',
+      gpa: '3.88 / 4.0',
+      honors: 'Magna Cum Laude, Dean’s Honor List (All Semesters), Beta Gamma Sigma Honor Society',
+    },
+  ],
+  skillCategories: [
+    {
+      id: 'skill-1',
+      categoryName: 'Financial Modeling & Valuation',
+      skills: ['DCF Modeling', '3-Statement Modeling', 'Comparable Company Analysis', 'LBO Fundamentals', 'Capital Budgeting', 'Financial Statement Analysis'],
+    },
+    {
+      id: 'skill-2',
+      categoryName: 'Business Analytics & Tools',
+      skills: ['Advanced Excel (VBA/Macros)', 'SQL', 'Power BI', 'Tableau', 'Bloomberg Terminal', 'Capital IQ', 'PitchBook'],
+    },
+    {
+      id: 'skill-3',
+      categoryName: 'Strategic Planning & Research',
+      skills: ['Market Research', 'Competitive Benchmarking', 'Go-To-Market (GTM) Strategy', 'Financial Due Diligence', 'Executive Presentations'],
+    },
+    {
+      id: 'skill-4',
+      categoryName: 'Leadership & Methodologies',
+      skills: ['Case Competition Strategy', 'Stakeholder Management', 'Cross-Functional Team Collaboration', 'Agile Project Tracking'],
+    },
+  ],
+  projects: [
+    {
+      id: 'proj-1',
+      title: 'National Collegiate Case Competition - 1st Place Strategy Framework',
+      technologies: 'Financial Valuation, Market Sizing, Scenario Analysis, PowerPoint',
+      date: 'Nov 2023',
+      bullets: [
+        'Formulated comprehensive 5-year turnaround and omnichannel expansion strategy for a struggling regional retailer, winning 1st Place out of 48 university teams.',
+        'Modeled payback periods and capital expenditure requirements across 3 growth scenarios, justifying a $15M investment proposal to panel of McKinsey and BCG judges.',
+      ],
+    },
+  ],
+  certifications: [
+    {
+      id: 'cert-1',
+      name: 'Bloomberg Market Concepts (BMC) Certification',
+      issuer: 'Bloomberg LP',
+      date: 'Issued Feb 2023',
+    },
+    {
+      id: 'cert-2',
+      name: 'Financial Modeling & Valuation Analyst (FMVA)',
+      issuer: 'Corporate Finance Institute (CFI)',
+      date: 'Issued Aug 2023',
+    },
+  ],
+};
+
+export const SAMPLE_ARTS_STUDENT_CV: CVData = {
+  personalInfo: {
+    fullName: 'MAYA LIN CARTER',
+    jobTitle: 'Visual Designer & Fine Arts Graduate | Creative Media Specialist',
+    email: 'maya.carter@email.com',
+    phone: '+1 (555) 628-9411',
+    location: 'New York, NY',
+    linkedinUrl: 'linkedin.com/in/mayacarter-arts',
+    githubUrl: '',
+    websiteUrl: 'mayacarterdesign.com',
+  },
+  summary:
+    'Creative and detail-oriented Fine Arts & Visual Design graduate with comprehensive studio and digital media experience spanning brand identity development, typography systems, editorial layout, and exhibition curation. Proficient in translating abstract conceptual narratives into compelling, accessible visual identities across digital, interactive, and print formats. Recipient of the 2024 Dean’s Award for Outstanding Fine Arts Portfolio.',
+  experience: [
+    {
+      id: 'exp-1',
+      jobTitle: 'Junior Graphic Designer & Studio Intern',
+      company: 'Monochrome Creative Studio',
+      location: 'Brooklyn, NY',
+      startDate: 'Jun 2023',
+      endDate: 'Aug 2023',
+      isCurrent: false,
+      bullets: [
+        'Designed cohesive brand identity kits, custom vector illustrations, and packaging mechanicals for 8 emerging lifestyle and cultural clients.',
+        'Collaborated with senior art directors to produce multi-channel digital marketing campaigns, generating over 120,000 organic social impressions.',
+        'Prepared rigorous pre-press print production files with precise color separations (Pantone/CMYK), bleeds, and paper stock specifications.',
+        'Structured modular Figma design systems and typography hierarchies adopted across the agency’s internal design workflows.',
+      ],
+    },
+    {
+      id: 'exp-2',
+      jobTitle: 'Gallery Assistant & Digital Media Coordinator',
+      company: 'Pratt Manhattan Gallery',
+      location: 'New York, NY',
+      startDate: 'Sep 2022',
+      endDate: 'May 2023',
+      isCurrent: false,
+      bullets: [
+        'Curated and designed layout for 3 full-color exhibition catalogs, managing print vendor deadlines and budget limits.',
+        'Photographed high-resolution fine art installations and edited color-accurate portfolio documentation using Adobe Lightroom and Photoshop.',
+        'Coordinated digital promotional assets and museum signage for seasonal exhibitions welcoming 15,000+ annual visitors.',
+      ],
+    },
+    {
+      id: 'exp-3',
+      jobTitle: 'Freelance Visual Designer & Illustrator',
+      company: 'Maya Carter Creative',
+      location: 'New York, NY',
+      startDate: 'Jan 2022',
+      endDate: 'Present',
+      isCurrent: true,
+      bullets: [
+        'Provided comprehensive branding packages, logo marks, and promotional posters for 14 independent non-profit and arts organizations.',
+        'Maintained 100% on-time delivery record and received 5-star client satisfaction ratings across all creative deliverables.',
+      ],
+    },
+  ],
+  education: [
+    {
+      id: 'edu-1',
+      degree: 'Bachelor of Fine Arts (BFA) in Graphic Design & Studio Arts',
+      institution: 'Pratt Institute',
+      location: 'Brooklyn, NY',
+      graduationDate: 'May 2024',
+      gpa: '3.91 / 4.0',
+      honors: 'President’s List with Distinction, Dean’s Showcase Award, Senior Honors Exhibition',
+    },
+  ],
+  skillCategories: [
+    {
+      id: 'skill-1',
+      categoryName: 'Design Software & Tools',
+      skills: ['Adobe Photoshop', 'Adobe Illustrator', 'Adobe InDesign', 'Figma', 'Adobe After Effects', 'Lightroom', 'Procreate', 'Keynote'],
+    },
+    {
+      id: 'skill-2',
+      categoryName: 'Visual & Graphic Disciplines',
+      skills: ['Brand Identity Systems', 'Typography & Grid Layout', 'Editorial Design', 'Color Theory & Systems', 'Print Production (CMYK/Pantone)', 'UI/UX Prototyping'],
+    },
+    {
+      id: 'skill-3',
+      categoryName: 'Studio & Fine Art Techniques',
+      skills: ['Screen Printing', 'Digital Photography', 'Exhibition Installation & Lighting', 'Archival Documentation', 'Vector Illustration'],
+    },
+    {
+      id: 'skill-4',
+      categoryName: 'Professional & Collaborative',
+      skills: ['Creative Art Direction', 'Client Pitching & Presentations', 'Design System Documentation', 'Pre-Press Verification', 'Vendor Management'],
+    },
+  ],
+  projects: [
+    {
+      id: 'proj-1',
+      title: 'Senior Thesis: "Urban Glyphs" Typography Monograph',
+      technologies: 'Adobe InDesign, Risograph Printing, Custom Typography, French Fold Binding',
+      date: 'Apr 2024',
+      bullets: [
+        'Researched, authored, and designed a 96-page limited-edition book investigating vernacular street signage and architectural letterforms across NYC.',
+        'Selected for permanent display in the Pratt Institute Fine Arts Library Rare Book Collection.',
+      ],
+    },
+    {
+      id: 'proj-2',
+      title: 'EcoArt Collective Digital Brand & Interactive App Prototype',
+      technologies: 'Figma, Adobe Illustrator, Design Systems, User Testing',
+      date: 'Dec 2023',
+      bullets: [
+        'Architected comprehensive design system and 24-screen interactive mobile prototype connecting local sustainable artists with patrons, verified via 35 user test sessions.',
+      ],
+    },
+  ],
+  certifications: [
+    {
+      id: 'cert-1',
+      name: 'Adobe Certified Professional in Visual Design',
+      issuer: 'Adobe',
+      date: 'Issued Oct 2023',
+    },
+    {
+      id: 'cert-2',
+      name: 'UI/UX Design Specialization Certificate',
+      issuer: 'California Institute of the Arts (CalArts)',
+      date: 'Issued Jun 2023',
+    },
+  ],
+};
+
 export const BLANK_CV: CVData = {
   personalInfo: {
     fullName: '',

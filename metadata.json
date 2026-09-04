@@ -1,6 +1,6 @@
 {
-  "name": "ATS Friendly CV Maker",
-  "description": "ATS-friendly CV and resume maker optimized for job application algorithms with standard formatting, keyword matching, and PDF & DOCX export.",
+  "name": "RKSK",
+  "description": "ATS CV optimizer: upload CV in PDF/DOCX or create new from scratch, match target job description, resolve skills gaps, and 1-click ATS optimize.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
