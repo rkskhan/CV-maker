@@ -1,0 +1,6 @@
+{
+  "name": "ATS Friendly CV Maker",
+  "description": "ATS-friendly CV and resume maker optimized for job application algorithms with standard formatting, keyword matching, and PDF & DOCX export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
