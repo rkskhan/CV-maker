@@ -6,7 +6,6 @@ import {
   Sparkles, 
   RotateCcw, 
   Upload, 
-  HelpCircle,
   CheckCircle2,
   Share2
 } from 'lucide-react';
@@ -21,7 +20,6 @@ interface HeaderProps {
   onExportDocx: () => void;
   onExportPdf: () => void;
   onPrint: () => void;
-  onOpenNetlifyModal: () => void;
   atsScore: number;
 }
 
@@ -33,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
   onExportDocx,
   onExportPdf,
   onPrint,
-  onOpenNetlifyModal,
   atsScore,
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -208,17 +205,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="hidden sm:inline">Save Draft</span>
               </button>
             </div>
-
-            {/* Netlify Deploy Guide Button */}
-            <button
-              id="netlify-info-btn"
-              onClick={onOpenNetlifyModal}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors text-xs font-medium"
-              title="Netlify deployment instructions"
-            >
-              <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
-              <span>Deploy Guide</span>
-            </button>
 
             {/* Primary Action Buttons: DOCX, PDF, Print */}
             <div className="flex items-center gap-2 ml-1">

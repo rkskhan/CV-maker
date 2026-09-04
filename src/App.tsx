@@ -16,7 +16,6 @@ import { EditorPanel } from './components/EditorPanel';
 import { ATSAuditPanel } from './components/ATSAuditPanel';
 import { JobMatcherPanel } from './components/JobMatcherPanel';
 import { ActionVerbsHelper } from './components/ActionVerbsHelper';
-import { NetlifyDeployModal } from './components/NetlifyDeployModal';
 import { 
   FileEdit, 
   ShieldCheck, 
@@ -24,8 +23,7 @@ import {
   Sparkles, 
   Download, 
   Check, 
-  AlertCircle,
-  HelpCircle
+  AlertCircle
 } from 'lucide-react';
 
 export default function App() {
@@ -34,7 +32,6 @@ export default function App() {
   const [activeStudioTab, setActiveStudioTab] = useState<'editor' | 'audit' | 'matcher' | 'verbs'>('editor');
   const [jobDescription, setJobDescription] = useState<string>('');
   const [highlightKeywords, setHighlightKeywords] = useState<string[]>([]);
-  const [isNetlifyModalOpen, setIsNetlifyModalOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
 
   // Compute live ATS score report whenever CV data updates
@@ -92,7 +89,6 @@ export default function App() {
         onExportDocx={handleExportDocx}
         onExportPdf={handleExportPdf}
         onPrint={handlePrint}
-        onOpenNetlifyModal={() => setIsNetlifyModalOpen(true)}
         atsScore={atsReport.overallScore}
       />
 
@@ -257,12 +253,6 @@ export default function App() {
 
         </div>
       </main>
-
-      {/* Netlify Deployment Instructions Modal */}
-      <NetlifyDeployModal
-        isOpen={isNetlifyModalOpen}
-        onClose={() => setIsNetlifyModalOpen(false)}
-      />
     </div>
   );
 }
