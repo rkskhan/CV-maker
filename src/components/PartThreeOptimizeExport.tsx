@@ -48,7 +48,12 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
   onPrev
 }) => {
   const [previousCV, setPreviousCV] = useState<CVData | null>(null);
-  const [optDetails, setOptDetails] = useState<{ keywordsAdded: string[]; verbsEnhanced: number } | null>(null);
+  const [optDetails, setOptDetails] = useState<{ 
+    keywordsAdded: string[]; 
+    verbsEnhanced: number;
+    domainDetected: string;
+    targetRoleTitle: string;
+  } | null>(null);
   const [highlightKeywords, setHighlightKeywords] = useState<string[]>(jobMatchReport.foundKeywords);
   const [activeSideTab, setActiveSideTab] = useState<'skills-gap' | 'audit' | 'verbs'>('skills-gap');
 
@@ -65,7 +70,9 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
     onUpdateCV(result.optimizedCV);
     setOptDetails({
       keywordsAdded: result.keywordsAdded,
-      verbsEnhanced: result.verbsEnhanced
+      verbsEnhanced: result.verbsEnhanced,
+      domainDetected: result.domainDetected,
+      targetRoleTitle: result.targetRoleTitle
     });
 
     // Update highlighted keywords with all matched and added
@@ -164,14 +171,26 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
 
           {/* Optimization Success Feedback */}
           {optDetails && (
-            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2.5 text-xs text-green-900 animate-in fade-in duration-200">
-              <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="font-bold">
-                  Optimization Successfully Applied!
-                </p>
-                <p className="text-[11px] text-green-800 leading-relaxed">
-                  Injected <span className="font-bold">{optDetails.keywordsAdded.length}</span> targeted keywords into technical competencies ({optDetails.keywordsAdded.slice(0, 6).join(', ')}{optDetails.keywordsAdded.length > 6 ? '...' : ''}), upgraded <span className="font-bold">{optDetails.verbsEnhanced}</span> experience bullet action verbs, and updated candidate summary.
+            <div className="mt-3 p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-2.5 text-xs text-emerald-950 animate-in fade-in duration-200">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="space-y-1.5 w-full">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-bold text-emerald-950">
+                    Relatable Optimization Successfully Applied!
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded font-bold text-[10px] uppercase tracking-wider">
+                      Role Domain: {optDetails.domainDetected === 'hr' ? 'Human Resources (HR)' : optDetails.domainDetected === 'marketing' ? 'Marketing & Growth' : optDetails.domainDetected === 'operations' ? 'Operations & Admin' : optDetails.domainDetected === 'tech' ? 'Software & Tech' : 'Professional Business'}
+                    </span>
+                    <span className="px-2 py-0.5 bg-white text-slate-800 border border-slate-200 rounded font-semibold text-[10px]">
+                      Target: {optDetails.targetRoleTitle}
+                    </span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-emerald-900 leading-relaxed">
+                  • Injected <span className="font-bold">{optDetails.keywordsAdded.length}</span> role-specific competencies ({optDetails.keywordsAdded.slice(0, 5).join(', ')}{optDetails.keywordsAdded.length > 5 ? '...' : ''}) without adding extraneous contact info or certificates.<br />
+                  • Upgraded <span className="font-bold">{optDetails.verbsEnhanced}</span> bullet point action verbs to role-appropriate active phrasing.<br />
+                  • Tailored professional summary to naturally match the requirements of <span className="font-bold">{optDetails.targetRoleTitle}</span>.
                 </p>
               </div>
             </div>

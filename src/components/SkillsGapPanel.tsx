@@ -14,6 +14,7 @@ import {
   RotateCcw,
   Zap
 } from 'lucide-react';
+import { formatKeywordDisplay } from '../utils/keywordMatcher';
 
 interface SkillsGapPanelProps {
   cv: CVData;
@@ -41,12 +42,13 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
     : 100;
 
   // Add a single missing skill to CV
-  const handleAddSkill = (skill: string) => {
+  const handleAddSkill = (rawSkill: string) => {
+    const formatted = formatKeywordDisplay(rawSkill);
     const updatedCV = JSON.parse(JSON.stringify(cv)) as CVData;
     
     // Find preferred category: 'Technical Skills', 'Core Skills', or first existing
     let targetCat = updatedCV.skillCategories.find(c => 
-      /technical|core|tools|technologies|proficiencies/i.test(c.categoryName)
+      /technical|core|tools|technologies|proficiencies|competencies|skills/i.test(c.categoryName)
     );
 
     if (!targetCat) {
@@ -55,7 +57,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
       } else {
         targetCat = {
           id: `cat-${Date.now()}`,
-          categoryName: 'Target Job Skills',
+          categoryName: 'Target Job Competencies',
           skills: []
         };
         updatedCV.skillCategories.push(targetCat);
@@ -63,11 +65,11 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
     }
 
     // Check if skill already present (case-insensitive)
-    const exists = targetCat.skills.some(s => s.toLowerCase() === skill.toLowerCase());
+    const exists = targetCat.skills.some(s => s.toLowerCase() === rawSkill.toLowerCase() || s.toLowerCase() === formatted.toLowerCase());
     if (!exists) {
-      targetCat.skills.push(skill);
+      targetCat.skills.push(formatted);
       onUpdateCV(updatedCV);
-      setRecentlyAdded(prev => [...prev, skill.toLowerCase()]);
+      setRecentlyAdded(prev => [...prev, rawSkill.toLowerCase(), formatted.toLowerCase()]);
     }
   };
 
@@ -77,7 +79,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
 
     const updatedCV = JSON.parse(JSON.stringify(cv)) as CVData;
     let targetCat = updatedCV.skillCategories.find(c => 
-      /technical|core|tools|technologies/i.test(c.categoryName)
+      /technical|core|tools|technologies|competencies|skills/i.test(c.categoryName)
     );
 
     if (!targetCat) {
@@ -86,7 +88,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
       } else {
         targetCat = {
           id: `cat-${Date.now()}`,
-          categoryName: 'Target Job Skills',
+          categoryName: 'Target Job Competencies',
           skills: []
         };
         updatedCV.skillCategories.push(targetCat);
@@ -95,10 +97,11 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
 
     const newlyAddedList: string[] = [];
     missingKeywords.forEach(kw => {
-      const exists = targetCat!.skills.some(s => s.toLowerCase() === kw.toLowerCase());
+      const formatted = formatKeywordDisplay(kw);
+      const exists = targetCat!.skills.some(s => s.toLowerCase() === kw.toLowerCase() || s.toLowerCase() === formatted.toLowerCase());
       if (!exists) {
-        targetCat!.skills.push(kw);
-        newlyAddedList.push(kw.toLowerCase());
+        targetCat!.skills.push(formatted);
+        newlyAddedList.push(kw.toLowerCase(), formatted.toLowerCase());
       }
     });
 
@@ -108,12 +111,13 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
 
   // Remove skill if user wants to undo
   const handleRemoveSkill = (skill: string) => {
+    const formatted = formatKeywordDisplay(skill);
     const updatedCV = JSON.parse(JSON.stringify(cv)) as CVData;
     updatedCV.skillCategories.forEach(cat => {
-      cat.skills = cat.skills.filter(s => s.toLowerCase() !== skill.toLowerCase());
+      cat.skills = cat.skills.filter(s => s.toLowerCase() !== skill.toLowerCase() && s.toLowerCase() !== formatted.toLowerCase());
     });
     onUpdateCV(updatedCV);
-    setRecentlyAdded(prev => prev.filter(s => s !== skill.toLowerCase()));
+    setRecentlyAdded(prev => prev.filter(s => s !== skill.toLowerCase() && s !== formatted.toLowerCase()));
   };
 
   // Filter lists based on search
@@ -303,7 +307,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
                         : 'bg-white hover:bg-amber-100/60 border-amber-300 text-amber-950 shadow-2xs'
                     }`}
                   >
-                    <span>{skill}</span>
+                    <span>{formatKeywordDisplay(skill)}</span>
                     {wasAdded ? (
                       <button
                         onClick={() => handleRemoveSkill(skill)}
@@ -316,7 +320,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
                       <button
                         onClick={() => handleAddSkill(skill)}
                         className="text-amber-800 hover:text-red-700 p-0.5 rounded transition-colors hover:scale-110"
-                        title={`Add "${skill}" to CV skills`}
+                        title={`Add "${formatKeywordDisplay(skill)}" to CV skills`}
                       >
                         <Plus className="w-3.5 h-3.5 text-red-600 font-bold" />
                       </button>
@@ -356,7 +360,7 @@ export const SkillsGapPanel: React.FC<SkillsGapPanelProps> = ({
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-emerald-300 text-emerald-900 shadow-2xs"
                 >
                   <Check className="w-3 h-3 text-emerald-600 font-bold" />
-                  {skill}
+                  {formatKeywordDisplay(skill)}
                 </span>
               ))}
             </div>
