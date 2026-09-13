@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CVData, ATSFormatPreset, ATSScoreReport, JobMatchReport } from '../types/cv';
 import { optimizeCVForJob } from '../utils/cvOptimizer';
+import { cleanAndFormatForATS } from '../utils/atsFormatter';
 import { CVPreview } from './CVPreview';
 import { ATSAuditPanel } from './ATSAuditPanel';
 import { ActionVerbsHelper } from './ActionVerbsHelper';
@@ -17,7 +18,8 @@ import {
   FileCheck,
   AlertTriangle,
   Sliders,
-  Target
+  Target,
+  ArrowRight
 } from 'lucide-react';
 
 interface PartThreeOptimizeExportProps {
@@ -54,11 +56,16 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
     domainDetected: string;
     targetRoleTitle: string;
   } | null>(null);
+  const [cleanReport, setCleanReport] = useState<string[] | null>(null);
   const [highlightKeywords, setHighlightKeywords] = useState<string[]>(jobMatchReport.foundKeywords);
-  const [activeSideTab, setActiveSideTab] = useState<'skills-gap' | 'audit' | 'verbs'>('skills-gap');
+  const [activeSideTab, setActiveSideTab] = useState<'skills-gap' | 'audit' | 'verbs'>(
+    jobDescription.trim() ? 'skills-gap' : 'audit'
+  );
+
+  const hasJD = Boolean(jobDescription.trim());
 
   const handle1ClickOptimize = () => {
-    if (!jobDescription.trim()) {
+    if (!hasJD) {
       alert('Please enter or upload a job description in Part 2 before optimizing.');
       return;
     }
@@ -80,11 +87,19 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
     setHighlightKeywords(combined);
   };
 
+  const handleDirectCleanAndFormat = () => {
+    setPreviousCV(JSON.parse(JSON.stringify(cv)));
+    const res = cleanAndFormatForATS(cv);
+    onUpdateCV(res.formattedCV);
+    setCleanReport(res.changesMade);
+  };
+
   const handleRevert = () => {
     if (previousCV) {
       onUpdateCV(previousCV);
       setPreviousCV(null);
       setOptDetails(null);
+      setCleanReport(null);
     }
   };
 
@@ -102,11 +117,13 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
                 Step 3 of 3
               </span>
               <h2 className="text-base font-bold text-slate-900">
-                Optimize CV & Export (PDF / DOCX)
+                {hasJD ? 'Optimize CV & Export (PDF / DOCX)' : 'ATS Format & Export (PDF / DOCX)'}
               </h2>
             </div>
             <p className="text-xs text-slate-500">
-              Apply 1-click ATS keyword optimization, verify ATS compatibility, and export in Word (.docx) or PDF (.pdf).
+              {hasJD 
+                ? 'Apply 1-click ATS keyword optimization, verify ATS compatibility, and export in Word (.docx) or PDF (.pdf).'
+                : 'Direct ATS Mode: Format your existing CV into a 100% machine-readable single-column layout for Workday, Taleo, Greenhouse, and Lever.'}
             </p>
           </div>
 
@@ -115,87 +132,181 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
               <span className="text-xs font-bold">ATS Score: {atsReport.overallScore}%</span>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
-              <span className="text-xs font-bold">Job Match: {jobMatchReport.matchScore}%</span>
-            </div>
+            {hasJD ? (
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
+                <span className="text-xs font-bold">Job Match: {jobMatchReport.matchScore}%</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-xs font-bold">Direct ATS Mode</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* 1-Click Optimizer Hero Action Card */}
-        <div className="mt-5 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/50 border border-blue-200 rounded-xl">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-blue-600 text-white font-black text-[10px] uppercase tracking-wider rounded">
-                  Algorithmic Engine
-                </span>
-                <h3 className="text-sm font-bold text-slate-900">
-                  Automated 1-Click ATS Job Optimizer
-                </h3>
-              </div>
-              <p className="text-xs text-slate-600">
-                {jobDescription.trim()
-                  ? `Identified ${jobMatchReport.missingKeywords.length} missing target keywords. Clicking optimize will inject missing competencies and upgrade passive verbs.`
-                  : 'Add a job description in Part 2 to unlock automated keyword matching.'}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                id="btn-one-click-optimize"
-                onClick={handle1ClickOptimize}
-                disabled={!jobDescription.trim()}
-                className={`px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-xs ${
-                  jobDescription.trim()
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
-              >
-                <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-                <span>⚡ 1-Click ATS Optimize for This Job</span>
-              </button>
-
-              {previousCV && (
-                <button
-                  id="btn-revert-optimize"
-                  onClick={handleRevert}
-                  className="px-3 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5"
-                  title="Undo optimization"
-                >
-                  <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Revert</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Optimization Success Feedback */}
-          {optDetails && (
-            <div className="mt-3 p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-2.5 text-xs text-emerald-950 animate-in fade-in duration-200">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div className="space-y-1.5 w-full">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-bold text-emerald-950">
-                    Relatable Optimization Successfully Applied!
-                  </p>
-                  <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded font-bold text-[10px] uppercase tracking-wider">
-                      Role Domain: {optDetails.domainDetected === 'hr' ? 'Human Resources (HR)' : optDetails.domainDetected === 'marketing' ? 'Marketing & Growth' : optDetails.domainDetected === 'operations' ? 'Operations & Admin' : optDetails.domainDetected === 'tech' ? 'Software & Tech' : 'Professional Business'}
-                    </span>
-                    <span className="px-2 py-0.5 bg-white text-slate-800 border border-slate-200 rounded font-semibold text-[10px]">
-                      Target: {optDetails.targetRoleTitle}
-                    </span>
-                  </div>
+        {/* HERO ACTION SECTION: Adapts based on whether user provided a Job Description */}
+        {!hasJD ? (
+          /* Direct ATS Formatter Hero Card (No JD Required) */
+          <div className="mt-5 p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-xl shadow-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-red-600 text-white font-black text-[10px] uppercase tracking-wider rounded">
+                    Direct ATS Engine
+                  </span>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    Convert Existing CV to ATS-Friendly Format
+                  </h3>
                 </div>
-                <p className="text-[11px] text-emerald-900 leading-relaxed">
-                  • Injected <span className="font-bold">{optDetails.keywordsAdded.length}</span> role-specific competencies ({optDetails.keywordsAdded.slice(0, 5).join(', ')}{optDetails.keywordsAdded.length > 5 ? '...' : ''}) without adding extraneous contact info or certificates.<br />
-                  • Upgraded <span className="font-bold">{optDetails.verbsEnhanced}</span> bullet point action verbs to role-appropriate active phrasing.<br />
-                  • Tailored professional summary to naturally match the requirements of <span className="font-bold">{optDetails.targetRoleTitle}</span>.
+                <p className="text-xs text-slate-300">
+                  Standardizes section headings, sanitizes non-standard bullet symbols/wingdings, validates contact details, and formats your existing CV into a clean single-column layout for Workday, Taleo, Greenhouse, and Lever.
                 </p>
               </div>
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  id="btn-direct-clean-format"
+                  onClick={handleDirectCleanAndFormat}
+                  className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg flex items-center gap-2 transition-all shadow-xs"
+                >
+                  <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                  <span>⚡ 1-Click ATS Reformat & Clean</span>
+                </button>
+
+                {previousCV && (
+                  <button
+                    id="btn-revert-direct-clean"
+                    onClick={handleRevert}
+                    className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5"
+                    title="Undo reformatting"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Revert</span>
+                  </button>
+                )}
+
+                <button
+                  id="btn-add-jd-from-part3"
+                  onClick={onPrev}
+                  className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5"
+                  title="Optionally add a job description to match keywords"
+                >
+                  <Target className="w-3.5 h-3.5 text-slate-400" />
+                  <span>+ Match a Job (Optional)</span>
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+
+            {/* Direct Formatting Success Feedback */}
+            {cleanReport && cleanReport.length > 0 && (
+              <div className="mt-3 p-3.5 bg-emerald-950/80 border border-emerald-500/30 rounded-lg flex items-start gap-2.5 text-xs text-emerald-200 animate-in fade-in duration-200">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="space-y-1 w-full">
+                  <p className="font-bold text-emerald-300 text-xs">
+                    ATS Single-Column Format & Structure Successfully Applied!
+                  </p>
+                  <ul className="text-[11px] text-emerald-200/90 space-y-0.5 list-disc list-inside">
+                    {cleanReport.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Job Match Optimizer Hero Action Card */
+          <div className="mt-5 p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/50 border border-blue-200 rounded-xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-blue-600 text-white font-black text-[10px] uppercase tracking-wider rounded">
+                    Algorithmic Engine
+                  </span>
+                  <h3 className="text-sm font-bold text-slate-900">
+                    Automated 1-Click ATS Job Optimizer
+                  </h3>
+                </div>
+                <p className="text-xs text-slate-600">
+                  Identified {jobMatchReport.missingKeywords.length} missing target keywords. Clicking optimize will inject missing competencies and upgrade passive verbs.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  id="btn-one-click-optimize"
+                  onClick={handle1ClickOptimize}
+                  className="px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all shadow-xs bg-red-600 hover:bg-red-700 text-white"
+                >
+                  <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                  <span>⚡ 1-Click ATS Optimize for This Job</span>
+                </button>
+
+                <button
+                  id="btn-reformat-clean-part3"
+                  onClick={handleDirectCleanAndFormat}
+                  className="px-3 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5"
+                  title="Sanitize bullet symbols and standardize section headings"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Clean ATS Formatting</span>
+                </button>
+
+                {previousCV && (
+                  <button
+                    id="btn-revert-optimize"
+                    onClick={handleRevert}
+                    className="px-3 py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5"
+                    title="Undo optimization"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Revert</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Optimization Success Feedback */}
+            {optDetails && (
+              <div className="mt-3 p-3.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-2.5 text-xs text-emerald-950 animate-in fade-in duration-200">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-1.5 w-full">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-bold text-emerald-950">
+                      Relatable Optimization Successfully Applied!
+                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded font-bold text-[10px] uppercase tracking-wider">
+                        Role Domain: {optDetails.domainDetected === 'hr' ? 'Human Resources (HR)' : optDetails.domainDetected === 'marketing' ? 'Marketing & Growth' : optDetails.domainDetected === 'operations' ? 'Operations & Admin' : optDetails.domainDetected === 'tech' ? 'Software & Tech' : 'Professional Business'}
+                      </span>
+                      <span className="px-2 py-0.5 bg-white text-slate-800 border border-slate-200 rounded font-semibold text-[10px]">
+                        Target: {optDetails.targetRoleTitle}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-emerald-900 leading-relaxed">
+                    • Injected <span className="font-bold">{optDetails.keywordsAdded.length}</span> role-specific competencies ({optDetails.keywordsAdded.slice(0, 5).join(', ')}{optDetails.keywordsAdded.length > 5 ? '...' : ''}) without adding extraneous contact info or certificates.<br />
+                    • Upgraded <span className="font-bold">{optDetails.verbsEnhanced}</span> bullet point action verbs to role-appropriate active phrasing.<br />
+                    • Tailored professional summary to naturally match the requirements of <span className="font-bold">{optDetails.targetRoleTitle}</span>.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Direct Clean Feedback if run in JD mode */}
+            {cleanReport && cleanReport.length > 0 && !optDetails && (
+              <div className="mt-3 p-3 bg-white border border-emerald-200 rounded-lg text-xs text-emerald-900 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">ATS formatting sanitized and standardized!</p>
+                  <p className="text-[11px] text-slate-600 mt-0.5">{cleanReport.slice(0, 3).join(' • ')}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Primary Export Station */}
         <div className="mt-4 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
@@ -306,12 +417,46 @@ export const PartThreeOptimizeExport: React.FC<PartThreeOptimizeExportProps> = (
           {/* Sub-view Content */}
           <div>
             {activeSideTab === 'skills-gap' && (
-              <SkillsGapPanel
-                cv={cv}
-                onUpdateCV={onUpdateCV}
-                jobDescription={jobDescription}
-                jobMatchReport={jobMatchReport}
-              />
+              hasJD ? (
+                <SkillsGapPanel
+                  cv={cv}
+                  onUpdateCV={onUpdateCV}
+                  jobDescription={jobDescription}
+                  jobMatchReport={jobMatchReport}
+                />
+              ) : (
+                <div className="bg-white rounded-xl border border-slate-200 p-6 text-center space-y-3.5 shadow-xs">
+                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-500">
+                    <Sparkles className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                      Skills Gap Scan (Requires Target Job)
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                      You are currently using <strong>Direct ATS Mode</strong> (converting your CV without matching a specific job). To view automated keyword gap analysis, load a job posting in Step 2.
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                    <button
+                      id="btn-goto-step2-from-skillsgap"
+                      onClick={onPrev}
+                      className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg inline-flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                    >
+                      <Target className="w-3.5 h-3.5" />
+                      <span>Add Target Job in Step 2</span>
+                    </button>
+                    <button
+                      id="btn-switchto-audit-tab"
+                      onClick={() => setActiveSideTab('audit')}
+                      className="w-full sm:w-auto px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg inline-flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>View ATS Audit Checks</span>
+                    </button>
+                  </div>
+                </div>
+              )
             )}
 
             {activeSideTab === 'audit' && (

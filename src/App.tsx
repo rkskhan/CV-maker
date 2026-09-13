@@ -15,6 +15,7 @@ import { StepProgressNav, AppPart } from './components/StepProgressNav';
 import { PartOneCVSetup } from './components/PartOneCVSetup';
 import { PartTwoJobDescription } from './components/PartTwoJobDescription';
 import { PartThreeOptimizeExport } from './components/PartThreeOptimizeExport';
+import { cleanAndFormatForATS } from './utils/atsFormatter';
 import { Check } from 'lucide-react';
 
 export default function App() {
@@ -34,6 +35,13 @@ export default function App() {
   const showToast = (message: string, type: 'success' | 'info' = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3500);
+  };
+
+  const handleDirectATSConvert = () => {
+    const res = cleanAndFormatForATS(cv);
+    setCV(res.formattedCV);
+    setCurrentPart(3);
+    showToast('Converted into 100% ATS-friendly single-column format! Ready to export.');
   };
 
   const handleExportDocx = async () => {
@@ -97,6 +105,7 @@ export default function App() {
             cv={cv}
             onUpdateCV={setCV}
             onNext={() => setCurrentPart(2)}
+            onDirectConvert={handleDirectATSConvert}
             atsScore={atsReport.overallScore}
           />
         )}
@@ -111,6 +120,7 @@ export default function App() {
             report={jobMatchReport}
             onPrev={() => setCurrentPart(1)}
             onNext={() => setCurrentPart(3)}
+            onDirectConvert={handleDirectATSConvert}
           />
         )}
 

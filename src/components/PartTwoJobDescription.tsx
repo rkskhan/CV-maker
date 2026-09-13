@@ -11,7 +11,8 @@ import {
   ArrowLeft,
   Plus,
   Check,
-  Briefcase
+  Briefcase,
+  Zap
 } from 'lucide-react';
 
 interface PartTwoJobDescriptionProps {
@@ -22,6 +23,7 @@ interface PartTwoJobDescriptionProps {
   report: JobMatchReport;
   onPrev: () => void;
   onNext: () => void;
+  onDirectConvert?: () => void;
 }
 
 const SAMPLE_JOB_POSTINGS: { label: string; roleType: string; text: string }[] = [
@@ -111,7 +113,8 @@ export const PartTwoJobDescription: React.FC<PartTwoJobDescriptionProps> = ({
   onUpdateJobDescription,
   report,
   onPrev,
-  onNext
+  onNext,
+  onDirectConvert,
 }) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadNotice, setUploadNotice] = useState<string | null>(null);
@@ -193,6 +196,30 @@ export const PartTwoJobDescription: React.FC<PartTwoJobDescriptionProps> = ({
               {report.matchScore}%
             </span>
           </div>
+        </div>
+
+        {/* Direct ATS Mode Skip Banner */}
+        <div className="mt-4 p-3 bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="space-y-0.5">
+            <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-red-600" />
+              Just want to convert your existing CV without matching a job?
+            </span>
+            <p className="text-[11px] text-slate-500">
+              Skip job description matching to directly format, audit, and export your CV in 100% ATS-compliant single-column layout.
+            </p>
+          </div>
+          <button
+            id="btn-skip-jd-top"
+            onClick={() => {
+              if (onDirectConvert) onDirectConvert();
+              else onNext();
+            }}
+            className="shrink-0 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-md flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+          >
+            <Zap className="w-3 h-3 text-amber-300 fill-amber-300" />
+            <span>⚡ Skip to Direct ATS Export</span>
+          </button>
         </div>
 
         {/* Input Controls: File upload & Sample quick load */}
@@ -391,14 +418,29 @@ export const PartTwoJobDescription: React.FC<PartTwoJobDescriptionProps> = ({
           <span>Back to Step 1: Your CV</span>
         </button>
 
-        <button
-          id="btn-goto-part3"
-          onClick={onNext}
-          className="w-full sm:w-auto px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all shadow-xs"
-        >
-          <span>Continue to Step 3: Skills Gap & Export</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+          <button
+            id="btn-skip-to-ats-export-bottom"
+            onClick={() => {
+              if (onDirectConvert) onDirectConvert();
+              else onNext();
+            }}
+            className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+            title="Skip job description and go straight to ATS single-column formatting & export"
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+            <span>⚡ Skip Match & Export ATS CV</span>
+          </button>
+
+          <button
+            id="btn-goto-part3"
+            onClick={onNext}
+            className="w-full sm:w-auto px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all shadow-xs"
+          >
+            <span>Continue to Step 3: Skills Gap & Export</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
